@@ -1,0 +1,175 @@
+.cake-table-wrapper {
+  padding-bottom: 20px;
+}
+
+
+.table-wrapper-info {
+  padding: 1em;
+  display: inline-block;
+  /* overflow-x: auto; */
+}
+
+.summary-table-container {
+  padding: 20px;
+  font-family: "Noto Sans JP", sans-serif;
+  /* max-height: 80vh;  */
+  /* overflow: auto; */
+  /* gap: 1em; */
+  display: inline-block;
+  flex-direction: column;
+}
+
+.table-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.summary-table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 600px;
+  text-align: center;
+  table-layout: fixed;
+  overflow: auto;
+}
+
+.summary-table th,
+.summary-table td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+
+  width: 90px;
+  height: 40px;
+}
+
+.summary-table th {
+  background-color: #185495f5;
+  color: #fff;
+  font-weight: bold;
+}
+
+.summary-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.summary-table th:first-child,
+.summary-table td:first-child {
+  width: 180px; 
+}
+
+.total-row {
+  background-color: #e6e5e5 !important;
+  font-weight: bold;
+}
+
+.total-cell {
+  background-color: #c1bdbd95;
+  font-weight: bold;
+}
+
+/* 🔹 Efeito hover: destaca a linha com borda mais grossa e leve sombra */
+.summary-table tbody tr:hover {
+  border: 2px solid #999; 
+  /* background-color: #f5f5f5;  */
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+/* 🔹 Corrige a sobreposição da borda nas células internas */
+.summary-table tbody tr:hover td {
+  border-top: 2px solid #999;
+  border-bottom: 2px solid #999;
+}
+
+/* 🔹 Mantém os totais em destaque fixo */
+.total-row:hover {
+  background-color: #e6e5e5 !important;
+  border: none;
+  cursor: default;
+}
+
+.table-order-actions {
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0.5rem;
+  margin-bottom: 1rem;
+  /* cursor: pointer; */
+  background-color: #c5c1c1a8;
+  padding-bottom: 0.1rem;
+
+  .btn-back {
+    cursor: pointer;
+    width: 100%;
+    img {
+      height: 2rem;
+      align-items: center;
+    }
+  }
+}
+
+.table-order-actions:hover {
+  background-color: #999;
+  cursor: pointer;
+}
+
+.title-未 {
+  background-color: #C40000;
+  color: aliceblue;
+}
+
+.title-オンライン予約 {
+  background-color: #000DBD !important;
+  color: aliceblue;
+}
+
+.title-店頭支払い済 {
+  background-color: #287300;
+  color: aliceblue;
+}
+
+
+.title-お渡し済 {
+  background-color: #6B6B6B !important;
+  color: aliceblue;
+}
+
+
+.title-キャンセル {
+  background-color: #000;
+  color: aliceblue;
+}
+
+/* 
+.table-生デコレーション {
+  background: #f0dddd;
+  padding: 10px;
+}
+
+.table-チョコレートケーキ {
+  background: #e2f0dd;
+  padding: 10px;
+}
+
+.table-イチゴタルト {
+  background: #dde2f0;
+  padding: 10px;
+}
+
+.table-クリーミーチーズ {
+  background: #eff0dd;
+  padding: 10px;
+}
+
+.table-プチガトー4個入り {
+  background: #f0dddd;
+  padding: 10px;
+}
+
+.table-プチガトー5個入り {
+  background: #e3ddf0;
+  padding: 10px;
+}
+ */
