@@ -58,3 +58,4 @@ networks:
     driver: bridge
   nginx-proxy:
     external: true
+    name: nginx-proxy_default 
