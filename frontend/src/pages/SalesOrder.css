@@ -142,34 +142,11 @@
   color: aliceblue;
 }
 
-/* 
-.table-生デコレーション {
-  background: #f0dddd;
-  padding: 10px;
+.cancel-row {
+  border-top: 1px solid #aaa;
+  background-color: #fff5f5;
 }
 
-.table-チョコレートケーキ {
-  background: #e2f0dd;
-  padding: 10px;
-}
-
-.table-イチゴタルト {
-  background: #dde2f0;
-  padding: 10px;
-}
-
-.table-クリーミーチーズ {
-  background: #eff0dd;
-  padding: 10px;
-}
-
-.table-プチガトー4個入り {
-  background: #f0dddd;
-  padding: 10px;
-}
-
-.table-プチガトー5個入り {
-  background: #e3ddf0;
-  padding: 10px;
-}
- */
+/* .cancel-row td {
+  color: #d00;
+} */
