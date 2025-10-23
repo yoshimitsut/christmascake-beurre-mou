@@ -17,26 +17,29 @@ services:
       - christmascake-backend
 
   backend:
-    build: ./backend
-    container_name: christmascake-backend
-    restart: always
-    environment:
-      - DB_HOST=db 
-      - DB_USER=yoshi
-      - DB_PASSWORD=1234
-      - DB_NAME=beurre_mou_christmascake
-      - VIRTUAL_HOST=christmascake.beurre-mou.com
-      - VIRTUAL_PORT=3001
-      - LETSENCRYPT_HOST=christmascake.beurre-mou.com
-    depends_on:
-      - db
-    networks:
-      - christmascake-backend
-      - beurre_mou_proxy-tier  # 🔑 MESMA NETWORK DO PROXY
+  build: ./backend
+  container_name: beurre-mou-christmascake-backend
+  restart: always
+  environment:
+    - DB_HOST=db 
+    - DB_USER=yoshi
+    - DB_PASSWORD=1234
+    - DB_NAME=beurre_mou_christmascake
+    - VIRTUAL_HOST=christmascake.beurre-mou.com
+    - VIRTUAL_PORT=3001
+    - VIRTUAL_PATH=/api
+    - LETSENCRYPT_HOST=christmascake.beurre-mou.com
+  labels:
+    - "com.github.nginx-proxy.nginx-proxy.proxy.path=/api"
+  depends_on:
+    - db
+  networks:
+    - christmascake-backend
+    - beurre_mou_proxy-tier
 
   frontend:
     build: ./frontend
-    container_name: christmascake-frontend
+    container_name: beurre-mou-christmascake-frontend
     restart: always
     environment:
       - VIRTUAL_HOST=christmascake.beurre-mou.com
