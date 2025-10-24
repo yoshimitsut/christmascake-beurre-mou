@@ -49,7 +49,7 @@ export type Order = {
   date: string;
   date_order?: string;
   pickupHour: string;
-  message: string;
+  message?: string;
   status: string;
   cakes: OrderCake[];
 };

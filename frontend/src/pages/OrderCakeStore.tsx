@@ -593,7 +593,7 @@ export default function OrderCake() {
                     <label className='select-group'>*個数:</label>
                   </div>
 
-                  <div className='input-group'>
+                  <div className='input-group' style={{display: "none"}}>
                     <label htmlFor="message_cake">メッセージプレート</label>
                     <textarea name="message_cake" id="message_cake" placeholder="ご要望がある場合のみご記入ください。"
                       value={item.message_cake || ""}
@@ -692,7 +692,7 @@ export default function OrderCake() {
               />
               <label htmlFor="pickupHour" className='select-group'>受け取り希望時間</label>
             </div>
-            <div className='input-group'>
+            <div className='input-group' style={{display: "none"}}>
               <label htmlFor="message">その他</label>
               <textarea name="message" id="message" placeholder=""></textarea>
             </div>

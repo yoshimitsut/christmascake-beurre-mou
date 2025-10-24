@@ -523,8 +523,8 @@ export default function ListOrder() {
                         </div>
                       </th>
                       <th>個数</th>
-                      <th className='message-cell'>メッセージ</th>
-                      <th className='message-cell'>その他</th>
+                      <th className='message-cell' style={{display: "none"}}>メッセージ</th>
+                      <th className='message-cell' style={{display: "none"}}>その他</th>
                       <th>電話番号</th>
                       <th>メールアドレス</th>
                       <th>編集</th>
@@ -590,7 +590,7 @@ export default function ListOrder() {
                               ))}
                             </ul>
                           </td>
-                          <td className='message-cell' style={{ textAlign: "left" }}>
+                          <td className='message-cell' style={{ textAlign: "left", display: "none" }}>
                             <ul>
                               {order.cakes.map((cake, index) => (
                                 <li key={`${order.id_order}-${cake.cake_id}-${index}`} >
@@ -606,7 +606,7 @@ export default function ListOrder() {
                               ))}
                             </ul>
                           </td>
-                          <td className='message-cell'>
+                          <td className='message-cell' style={{display: "none"}}>
                             {/* <div
                               className={`ellipsis-text ${expandedOrderId === order.id_order ? 'expanded' : ''}`}
                               onClick={() => setExpandedOrderId(expandedOrderId === order.id_order ? null : order.id_order)}

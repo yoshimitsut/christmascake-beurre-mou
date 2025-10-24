@@ -297,6 +297,17 @@ ul {
 
 /* Mobile */
 @media (max-width: 768px) {
+  .list-order-actions {
+    flex-direction: column;
+    gap: 1rem;
+    .list-btn {
+      width: 42vw;
+      height: 30vh;
+      img {
+        width: 50%;
+      }
+    }
+  }
   .table-wrapper {
     display: none;
   }
