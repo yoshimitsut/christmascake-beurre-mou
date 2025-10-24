@@ -301,12 +301,15 @@ ul {
     flex-direction: column;
     gap: 1rem;
     .list-btn {
-      width: 42vw;
-      height: 30vh;
+      width: 43vw;
+      height: 8rem;
       img {
-        width: 50%;
+        width: 6rem;
       }
     }
+  }
+  .btn-actions {
+    flex-direction: row-reverse;
   }
   .table-wrapper {
     display: none;
