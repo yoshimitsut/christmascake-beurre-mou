@@ -127,7 +127,7 @@ export default function ListOrder() {
 
     html5QrCode
       .start(
-        { facingMode: "environment" }, // 👈 força câmera traseira
+        { facingMode: "environment" }, 
         { fps: 10, qrbox: 250 },
         (decodedText) => {
           setShowScanner(false);
