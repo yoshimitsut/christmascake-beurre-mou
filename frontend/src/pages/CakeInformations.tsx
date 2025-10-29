@@ -93,7 +93,7 @@ export default function CakeInformations() {
               </tbody>
             </table>
 
-            <button onClick={handleReserve} className="reserve-btn">
+            <button onClick={handleReserve} style={{ display: "node" }} className="reserve-btn">
               予約
             </button>
           </div>
