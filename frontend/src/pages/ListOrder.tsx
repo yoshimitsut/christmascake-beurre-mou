@@ -526,7 +526,7 @@ export default function ListOrder() {
                       </th>
                       <th>個数</th>
                       <th className='message-cell' style={{display: "none"}}>メッセージ</th>
-                      <th className='message-cell' style={{display: "none"}}>その他</th>
+                      {/* <th className='message-cell' style={{display: "none"}}>その他</th> */}
                       <th>電話番号</th>
                       <th>メールアドレス</th>
                       <th>編集</th>
