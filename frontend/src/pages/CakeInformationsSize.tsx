@@ -45,18 +45,14 @@ export default function CakeInformationsSize() {
   // 🔹 TypeScript agora sabe que selectedCake existe
   return (
     <div className="cake-screen">
-      <div className="cake-wrapper">
-        <div className="cake-main">
-          <div className="main-right">
             
-          </div>
 
-          <div className="main-left">
             
             <table
               style={{
                 margin: "20px auto",
                 borderCollapse: "collapse",
+                fontSize: "7rem"
               }}
             >
               <tbody>
@@ -80,8 +76,5 @@ export default function CakeInformationsSize() {
               予約
             </button>
           </div>
-        </div>
-      </div>
-    </div>
   );
 }
