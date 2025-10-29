@@ -58,11 +58,11 @@
     justify-content: space-around;
 
     .cake-name {
-      font-size: 2.5rem;;
+      font-size: 3rem;
     }
 
     .cake-description {
-      font-size: 1.5rem;
+      font-size: 2rem;
     }
 
     table {
