@@ -115,7 +115,7 @@ app.post('/api/reservar', async (req, res) => {
         <table style="width: 400px; margin-bottom: 20px; border-collapse: collapse; background: #f9f9f9; border-radius: 8px; overflow: hidden;">
           <tr>
             <td style="width: 120px; padding: 15px; vertical-align: top;">
-              <img src="https://yoyaku.beurre-mou.com/image/${cake.name.toLowerCase().replace(/\s+/g, '-')}.jpg" 
+              <img src="https://christmascake.beurre-mou.com/image/${cake.name.toLowerCase().replace(/\s+/g, '-')}.jpg" 
                 alt="${cake.name}" 
                 width="100" 
                 style="border-radius: 6px; border: 1px solid #ddd;"
@@ -371,7 +371,7 @@ app.put('/api/orders/:id_order', async (req, res) => {
       <table style="width: 400px; margin-bottom: 20px; border-collapse: collapse; background: #f9f9f9; border-radius: 8px; overflow: hidden;">
         <tr>
           <td style="width: 120px; padding: 15px; vertical-align: top;">
-            <img src="https://yoyaku.beurre-mou.com/image/${cake.name.toLowerCase().replace(/\s+/g, '-')}.jpg" 
+            <img src="https://christmascake.beurre-mou.com/image/${cake.name.toLowerCase().replace(/\s+/g, '-')}.jpg" 
               alt="${cake.name}" 
               width="100" 
               style="border-radius: 6px; border: 1px solid #ddd;"

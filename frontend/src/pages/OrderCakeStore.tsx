@@ -634,7 +634,9 @@ export default function OrderCake() {
             </div>
           </div>
           <div className="date-information">
-            <label htmlFor="date" className='title-information'>*受取日時 / その他</label>
+            <label htmlFor="date" className='title-information'>*受取日時 
+              {/* / その他 */}
+              </label>
             {/* <span className='notification'>受取日は休業日を除いた３日以降より可能</span> */}
             <div className='input-group'>
               <label htmlFor="datepicker" className='datepicker'>*受け取り希望日</label>
