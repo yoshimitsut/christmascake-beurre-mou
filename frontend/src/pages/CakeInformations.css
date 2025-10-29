@@ -34,9 +34,9 @@
   overflow: hidden;
 
   .cake-description {
-    width: 25rem;
+    width: 37rem;
     white-space: pre-line;
-    font-size: 1.2remm;
+    font-size: 1.8rem;
   }
   img {
     width: 25em;
@@ -61,10 +61,6 @@
       font-size: 3rem;
     }
 
-    .cake-description {
-      font-size: 2rem;
-    }
-
     table {
       text-align: left;
     }
@@ -76,10 +72,10 @@
 }
 
 .reserve-btn {
-  width: 9rem;
-  height: 3rem;
+  width: 11rem;
+  height: 5rem;
   border-radius: 30px;
-  font-size: 20px;
+  font-size: 38px;
   cursor: pointer;
   transition: 0.5s all;
 }
