@@ -69,7 +69,7 @@ export default function CakeInformations() {
             <h2 className="cake-name">{selectedCake.name}</h2>
             <p className="cake-description">{selectedCake.description}</p>
 
-            <table
+            <table className="cake-inf-table"
               style={{
                 margin: "20px auto",
                 borderCollapse: "collapse",
@@ -93,8 +93,8 @@ export default function CakeInformations() {
               </tbody>
             </table>
 
-            <button onClick={handleReserve} style={{ display: "node" }} className="reserve-btn">
-              予約
+            <button onClick={handleReserve} className="reserve-btn">
+               
             </button>
           </div>
         </div>
