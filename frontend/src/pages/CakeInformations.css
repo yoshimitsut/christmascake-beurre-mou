@@ -46,15 +46,15 @@
   }
   .main-right {
     object-fit: cover;
-    width: 50vw; 
+    width: 59vw; 
   }
   .main-left {
-    width: 49vw; 
+    width: 39vw; 
     display: flex;
     gap: .75em;
     flex-direction: column;
     align-items: center;
-    padding: 1.5rem;
+    padding: 2.5rem 1.5rem;
     justify-content: space-around;
 
     .cake-name {
