@@ -30,6 +30,15 @@ export default function CakeInformations() {
       cake.name.trim().toLowerCase() === cakeName.trim().toLowerCase()
   );
 
+  // 🔹 Gerar nome da classe baseado no nome do bolo
+  const getCakeClassName = (cakeName: string): string => {
+    // Remove caracteres especiais e espaços, converte para minúsculas
+    return `cake-${cakeName
+      .toLowerCase()
+      .replace(/[^a-z0-9\u3040-\u309F\u30A0-\u30FF]/g, '') // Mantém letras, números e caracteres japoneses
+      .replace(/\s+/g, '-')}`;
+  };
+
   const handleReserve = () => {
     if (!selectedCake) return;
     navigate(`/order?cake=${encodeURIComponent(selectedCake.name.trim())}`);
@@ -46,7 +55,7 @@ export default function CakeInformations() {
   return (
     <div className="cake-screen">
       <div className="cake-wrapper">
-        <div className="cake-main">
+        <div className={`cake-main ${getCakeClassName(selectedCake.name)}`}>
           <div className="main-right">
             {selectedCake.image && (
               <img
@@ -64,6 +73,7 @@ export default function CakeInformations() {
               style={{
                 margin: "20px auto",
                 borderCollapse: "collapse",
+                fontSize: "1.5rem"
               }}
             >
               <tbody>

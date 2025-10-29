@@ -36,6 +36,7 @@
   .cake-description {
     width: 25rem;
     white-space: pre-line;
+    font-size: 1.2remm;
   }
   img {
     width: 25em;
@@ -57,11 +58,11 @@
     justify-content: space-around;
 
     .cake-name {
-      font-size: 2rem;;
+      font-size: 2.5rem;;
     }
 
     .cake-description {
-      font-size: 1.2rem;
+      font-size: 1.5rem;
     }
 
     table {
@@ -86,6 +87,27 @@
 .reserve-btn:hover{
   background-color: #c9c9c9d2;
 }
+
+.cake-プチガトー4り{
+  .main-right {
+    width: 59vw;
+  }
+
+  .main-left {
+    width: 39vw;
+  }
+}
+
+.cake-プチガトー5り{
+  .main-right {
+    width: 59vw;
+  }
+
+  .main-left {
+    width: 39vw;
+  }
+}
+
 
 
 @media (max-width: 990px) {
