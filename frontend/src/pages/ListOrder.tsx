@@ -406,7 +406,7 @@ export default function ListOrder() {
       {loading ? (
         <p>読み込み中...</p>
       ) : orders.length === 0 ? (
-        <p>注文が見つかりません。</p>
+        <p>注文がありません。</p>
       ) : (
         <>
           {/* Tabelas (desktop) */}
