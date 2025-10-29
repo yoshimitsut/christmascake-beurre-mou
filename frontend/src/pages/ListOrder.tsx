@@ -30,7 +30,6 @@ export default function ListOrder() {
   const [dateFilter, setDateFilter] = useState("すべて");
   const [hourFilter, setHourFilter] = useState("すべて");
 
-  // const [expandedOrderId, setExpandedOrderId] = useState<number | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
 
   const location = useLocation();
@@ -46,21 +45,10 @@ export default function ListOrder() {
   const filterOptions: FilterOption[] = [
     { value: "すべて", label: "すべて" },
     ...statusOptions
-    // ...statusOptions.filter(opt => opt.value !== "e"),
   ];
 
   const navigate = useNavigate();
   const handleSearch = useRef<number | null>(null);
-
-  // useEffect(() => {
-//   if (orders.length > 0) {
-//     console.log('Debug - Datas:', {
-//       dataOriginal: orders[0].date,
-//       formatada: formatDateJP(orders[0].date),
-//       timezoneNavegador: Intl.DateTimeFormat().resolvedOptions().timeZone
-//     });
-//   }
-// }, [orders]);
 
   // Efeito para lidar com navegação e recarga
   useEffect(() => {
@@ -146,7 +134,6 @@ export default function ListOrder() {
     };
   }, [showScanner, orders]);
 
-
   // Ordenar pedidos agrupados
   const sortedGroupedOrders = useMemo(() => {
     return Object.entries(groupedOrders) as [string, Order[]][];
@@ -172,7 +159,7 @@ export default function ListOrder() {
     if (!order) return;
 
     const statusMap: Record<string, string> = {
-      a: "未",
+      a: "未入金",
       b: "オンライン予約",
       c: "店頭支払い済",
       d: "お渡し済",
@@ -183,7 +170,7 @@ export default function ListOrder() {
     const nextStatus = statusMap[newStatus];
 
     const confirmed = window.confirm(
-      `(確認)ステータスを変更しますか？\n\n` +
+      `【確認】ステータスを変更しますか？\n\n` +
       `受付番号: ${String(order.id_order).padStart(4, "0")}\n` +
       `お名前: ${order.first_name} ${order.last_name}\n\n` +
       `${currentStatus} → ${nextStatus}`
@@ -207,11 +194,11 @@ export default function ListOrder() {
         data = await res.json();
       } catch (e) {
         console.error(e);
-        throw new Error(`Resposta inválida do servidor (status ${res.status})`);
+        throw new Error(`サーバーからの応答が無効です（ステータス ${res.status}）`);
       }
 
       if (!res.ok || !data || !data.success) {
-        throw new Error(data?.error || `Falha ao salvar (status ${res.status})`);
+        throw new Error(data?.error || `保存に失敗しました（ステータス ${res.status}）`);
       }
 
       setOrders((old) =>
@@ -219,8 +206,8 @@ export default function ListOrder() {
       );
 
     } catch (err) {
-      console.error("Erro ao atualizar status:", err);
-      alert("Erro ao salvar status no servidor. A lista será recarregada.");
+      console.error("ステータス更新エラー:", err);
+      alert("サーバーへのステータス保存中にエラーが発生しました。リストを再読み込みします。");
 
       setRefreshKey((k) => k + 1);
 
@@ -237,13 +224,7 @@ export default function ListOrder() {
   const handleSaveEdit = async (updatedOrder: Order) => {
     if (!updatedOrder) return;
 
-    // const confirmed = window.confirm("変更を保存しますか？");
-    // if (!confirmed) return;
-
     try {
-      // console.log("📤 Enviando para API:", updatedOrder);
-
-      // Use o novo endpoint para edição completa
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${updatedOrder.id_order}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -251,27 +232,24 @@ export default function ListOrder() {
       });
 
       const data = await res.json();
-      // console.log("📥 Resposta da API:", data);
 
       if (!res.ok || !data.success) {
         throw new Error(data.error || "更新に失敗しました。");
       }
 
-      // Atualiza localmente
       setOrders((old) =>
         old.map((o) =>
           o.id_order === updatedOrder.id_order ? updatedOrder : o
         )
       );
 
-      // Força refresh dos dados do servidor
       setRefreshKey(prev => prev + 1);
       
       setEditingOrder(null);
-      alert("✅ 注文が更新されました。");
+      alert("✅ 注文が正常に更新されました。");
     } catch (err) {
-      console.error("❌ Erro ao salvar edição:", err);
-      alert("更新エラーが発生しました。");
+      console.error("❌ 編集保存エラー:", err);
+      alert("❌ 更新中にエラーが発生しました。");
     }
   };
 
@@ -378,10 +356,10 @@ export default function ListOrder() {
         <div className='btn-actions'>
           <ExcelExportButton data={orders} filename='注文ケーキ.xlsx' sheetName='注文' />
           <button onClick={() => setShowScanner(true)} className='list-btn qrcode-btn'>
-            <img src="/icons/qr-code.ico" alt="qrcode icon" />
+            <img src="/icons/qr-code.ico" alt="QRコードアイコン" />
           </button>
           <button onClick={() => navigate("/ordertable")} className='list-btn'>
-            <img src="/icons/graph.ico" alt="graphic icon" />
+            <img src="/icons/graph.ico" alt="グラフアイコン" />
           </button>
         </div>
       </div>
@@ -426,7 +404,7 @@ export default function ListOrder() {
       )}
 
       {loading ? (
-        <p>Loading...</p>
+        <p>読み込み中...</p>
       ) : orders.length === 0 ? (
         <p>注文が見つかりません。</p>
       ) : (
@@ -434,14 +412,10 @@ export default function ListOrder() {
           {/* Tabelas (desktop) */}
           {displayOrders.map(([groupTitles, ordersForGroup]: [string, Order[]]) => {
             const activeOrdersForGroup = ordersForGroup;
-            // .filter(order => {
-              // if (search.trim() === "キャンセル") return order.status === "e";
-            //   return order.status !== "e";
-            // });
 
             return (
               <div key={groupTitles} className="table-wrapper scroll-cell table-order-container">
-                <table className="list-order-table table-order">
+                <table className="list-order-table table-order full-width-table">
                   <thead>
                     <tr>
                       <th className='id-cell'>受付番号</th>
@@ -460,8 +434,8 @@ export default function ListOrder() {
                           </select>
                         </div>
                       </th>
-                      <th>お名前</th>
-                      <th>
+                      <th className='name-cell'>お名前</th>
+                      <th className='date-cell'>
                         <div className='filter-column'>
                           受取希望日時
                           <div className='filter-column-date'>
@@ -509,7 +483,7 @@ export default function ListOrder() {
                           </div>
                         </div>
                       </th>
-                      <th>
+                      <th className='cake-cell'>
                         <div className='filter-column'>
                           ご注文のケーキ
                           <select value={cakeFilter} onChange={(e) => setCakeFilter(e.target.value)}>
@@ -524,12 +498,10 @@ export default function ListOrder() {
                           </select>
                         </div>
                       </th>
-                      <th>個数</th>
-                      <th className='message-cell' style={{display: "none"}}>メッセージ</th>
-                      {/* <th className='message-cell' style={{display: "none"}}>その他</th> */}
-                      <th>電話番号</th>
-                      <th>メールアドレス</th>
-                      <th>編集</th>
+                      <th className='quantity-cell'>個数</th>
+                      <th className='tel-cell'>電話番号</th>
+                      <th className='email-cell'>メールアドレス</th>
+                      <th className='edit-cell'>編集</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -555,7 +527,7 @@ export default function ListOrder() {
                       })
                       .map((order) => (
                         <tr key={order.id_order}>
-                          <td>{String(order.id_order).padStart(4, "0")}</td>
+                          <td className='id-cell'>{String(order.id_order).padStart(4, "0")}</td>
                           <td className='situation-cell'>
                             <Select<StatusOption, false>
                               options={statusOptions}
@@ -569,21 +541,20 @@ export default function ListOrder() {
                               isLoading={isUpdating && updatingOrderId === order.id_order}
                             />
                           </td>
-                          <td>
+                          <td className='name-cell'>
                             {order.first_name} {order.last_name}
                           </td>
-                          <td>{formatDateJP(order.date)} {order.pickupHour}</td>
-                          <td>
+                          <td className='date-cell'>{formatDateJP(order.date)} {order.pickupHour}</td>
+                          <td className='cake-cell'>
                             <ul>
                               {order.cakes.map((cake, index) => (
                                 <li key={`${order.id_order}-${cake.cake_id}-${index}`}>
-                                  {cake.name}
-                                  {cake.size} - ¥{cake.price}<br />
+                                  {cake.name} {cake.size} - ¥{cake.price}
                                 </li>
                               ))}
                             </ul>
                           </td>
-                          <td style={{ textAlign: "left" }}>
+                          <td className='quantity-cell'>
                             <ul>
                               {order.cakes.map((cake, index) => (
                                 <li key={`${order.id_order}-${cake.cake_id}-${index}`}>
@@ -592,38 +563,9 @@ export default function ListOrder() {
                               ))}
                             </ul>
                           </td>
-                          <td className='message-cell' style={{ textAlign: "left", display: "none" }}>
-                            <ul>
-                              {order.cakes.map((cake, index) => (
-                                <li key={`${order.id_order}-${cake.cake_id}-${index}`} >
-                                  {/* <div
-                                    className={`ellipsis-text`}
-                                    onClick={() => setExpandedOrderId(expandedOrderId === order.id_order ? null : order.id_order)}
-                                    title={expandedOrderId ? "" : "クリックして全メッセージを表示"}
-                                    style={{ cursor: "pointer" }}
-                                  > */}
-                                    {cake.message_cake}
-                                  {/* </div> */}
-                                </li>
-                              ))}
-                            </ul>
-                          </td>
-                          <td className='message-cell'style={{ display: "none" }}>
-                            {/* <div
-                              className={`ellipsis-text ${expandedOrderId === order.id_order ? 'expanded' : ''}`}
-                              onClick={() => setExpandedOrderId(expandedOrderId === order.id_order ? null : order.id_order)}
-                              title={expandedOrderId ? "" : "クリックして全メッセージを表示"}
-                              style={{ cursor: "pointer" }}
-                            > */}
-                            <li>
-                              {order.message || " "}
-
-                            </li>
-                            {/* </div> */}
-                          </td>
-                          <td>{order.tel}</td>
-                          <td>{order.email}</td>
-                          <td>
+                          <td className='tel-cell'>{order.tel}</td>
+                          <td className='email-cell'>{order.email}</td>
+                          <td className='edit-cell'>
                             <button
                               onClick={() => setEditingOrder(order)}
                               style={{
