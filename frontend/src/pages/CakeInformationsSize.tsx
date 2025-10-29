@@ -45,36 +45,33 @@ export default function CakeInformationsSize() {
   // 🔹 TypeScript agora sabe que selectedCake existe
   return (
     <div className="cake-screen">
-            
-
-            
-            <table
-              style={{
-                margin: "20px auto",
-                borderCollapse: "collapse",
-                fontSize: "7rem"
-              }}
-            >
-              <tbody>
-                {selectedCake.sizes?.map((size, index) => (
-                  <tr key={index}>
+          <table
+            style={{
+              margin: "20px auto",
+              borderCollapse: "collapse",
+              fontSize: "7rem"
+            }}
+          >
+            <tbody>
+              {selectedCake.sizes?.map((size, index) => (
+                <tr key={index}>
+                  <td style={{ padding: "8px" }}>
+                    {size.size}
+                  </td>
                     <td style={{ padding: "8px" }}>
-                      {size.size}
-                    </td>
-                     <td style={{ padding: "8px" }}>
-                      ¥
-                      {/* {size.price.toLocaleString("ja-JP")} */}
-                      {size.price.toLocaleString("ja-JP")} 税込
-                      {size.stock === 0 && <span style={{ color: "red"}}>  完売</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    ¥
+                    {/* {size.price.toLocaleString("ja-JP")} */}
+                    {size.price.toLocaleString("ja-JP")} 税込
+                    {size.stock === 0 && <span style={{ color: "red"}}>  完売</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-            <button style={{display:"none"}} onClick={handleReserve} className="reserve-btn">
-              予約
-            </button>
-          </div>
+          <button style={{display:"none"}} onClick={handleReserve} className="reserve-btn">
+            予約
+          </button>
+        </div>
   );
 }
