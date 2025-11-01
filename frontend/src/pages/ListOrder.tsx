@@ -148,10 +148,10 @@ export default function ListOrder() {
     }
   }, [viewMode, sortedGroupedOrders, orders]);
 
-  const formatDate = (isoString: string) => {
-    const date = new Date(isoString);
-    return date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
-  };
+  // const formatDate = (isoString: string) => {
+  //   const date = new Date(isoString);
+  //   return date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  // };
 
   // Função para alterar status
   async function handleStatusChange(id: number, newStatus: "a" | "b" | "c" | "d" | "e") {
@@ -448,12 +448,13 @@ export default function ListOrder() {
                             >
                               <option value="すべて">すべて</option>
                               {Array.from(new Set(orders.map((o) => o.date)))
-                                .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+                                .sort((a, b) => a.localeCompare(b)) 
                                 .map((date) => (
                                   <option key={date} value={date}>
-                                    {formatDate(date)}
+                                    {formatDateJP(date)} 
                                   </option>
                                 ))}
+
                             </select>
 
                             <select
