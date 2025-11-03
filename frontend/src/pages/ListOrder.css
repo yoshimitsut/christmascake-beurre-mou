@@ -53,13 +53,51 @@ ul {
   padding: 8px;
   vertical-align: top;
   text-align: left;
-  overflow: hidden;
+  /* overflow: hidden; */
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .list-order-table ul {
   margin: 0;
+}
+
+/* No ListOrder.css */
+/* .situation-cell {
+  position: relative;
+  z-index: 100;
+} */
+
+.situation-cell select {
+  position: relative;
+  z-index: 101;
+}
+
+/* Forçar o dropdown para aparecer por cima */
+.situation-cell select:focus {
+  z-index: 10000;
+  position: relative;
+}
+
+/* Para todos os selects de filtro */
+.filter-column select {
+  position: relative;
+  z-index: 100;
+}
+
+.filter-column select:focus {
+  z-index: 10000;
+}
+
+/* Aumentar o z-index da tabela container */
+.table-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.list-order-table {
+  position: relative;
+  z-index: 1;
 }
 
 .list-order-table td.status-cell,

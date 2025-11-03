@@ -425,6 +425,8 @@ export default function ListOrder() {
                           <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
+                            className="status-filter-select"
+                            
                           >
                             {filterOptions.map((opt) => (
                               <option key={opt.value} value={opt.value}>
