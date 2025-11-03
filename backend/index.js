@@ -126,10 +126,10 @@ app.post('/api/reservar', async (req, res) => {
               <h3 style="margin: 0 0 10px 0;">${cake.name}</h3>
               ${cake.size ? `<p style="margin: 5px 0;"><strong>サイズ:</strong> ${cake.size}</p>` : ''}
               <p style="margin: 5px 0;"><strong>個数:</strong> ${cake.amount}個</p>
-              <p style="margin: 5px 0;"><strong>価格:</strong> ¥${Math.trunc(cake.price*1.08).toLocaleString("ja-JP")}</p>
+              <p style="margin: 5px 0;"><strong>価格:</strong> ¥${Math.trunc(cake.price).toLocaleString("ja-JP")}</p>
               ${cake.message_cake ? `<p style="margin: 5px 0;"><strong>メッセージプレート:</strong> ${cake.message_cake || 'なし'}</p>` : ''}
               <hr/>
-              <strong>小計 ${Math.trunc((cake.price*1.08)*cake.amount).toLocaleString("ja-JP")}</strong>
+              <strong>小計 ${Math.trunc((cake.price)*cake.amount).toLocaleString("ja-JP")}</strong>
               </td>
           </tr>
         </table>
@@ -139,7 +139,7 @@ app.post('/api/reservar', async (req, res) => {
       <div style="max-width: 400px; background: #ddd; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center;">
         <h3 style="margin: 0; color: #000;">合計金額</h3>
         <p style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">
-          ¥${Math.trunc(newOrder.cakes.reduce((total, cake) => total + ((cake.price * 1.08) * cake.amount), 0)).toLocaleString("ja-JP")}
+          ¥${Math.trunc(newOrder.cakes.reduce((total, cake) => total + ((cake.price) * cake.amount), 0)).toLocaleString("ja-JP")}
           <span style="font-size: 14px; font-weight: normal;">(税込)</span>
         </p>
       </div>
@@ -393,7 +393,7 @@ app.put('/api/orders/:id_order', async (req, res) => {
 
     // Calcular total geral
     const totalGeral = cakes.reduce((total, cake) => total + (cake.price * cake.amount), 0);
-    const totalComTaxa = totalGeral * 1.08;
+    const totalComTaxa = totalGeral;
 
     const mailOptions = {
         from: '"パティスリーブール・ムー" <beurre.mou.christmascake@gmail.com>', 
