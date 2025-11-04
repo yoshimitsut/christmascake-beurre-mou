@@ -428,8 +428,9 @@ export default function ListOrder() {
             {foundScannedOrder.cakes.map((cake, index) => (
               <li key={`${cake.cake_id}-${index}`}>
                 <span className='cake-name'>{cake.name}</span>
-                <span className='cake-amount'>¥{cake.size}</span>
-                <span className='cake-size'>個数: {cake.amount}</span>
+                <span className='cake-amount'>¥{cake.price.toLocaleString()}</span>
+                <span className='cake-size'>サイズ: {cake.size}</span>
+                <span className='cake-quantity'>個数: {cake.amount}</span>
               </li>
             ))}
           </ul>
