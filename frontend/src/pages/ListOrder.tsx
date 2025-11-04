@@ -109,54 +109,28 @@ export default function ListOrder() {
 
   // Efeito para o scanner QR Code
   useEffect(() => {
-    let html5QrCode: Html5Qrcode | null = null;
+    if (!showScanner) return;
 
-    if (showScanner) {
-      html5QrCode = new Html5Qrcode("reader");
+    const html5QrCode = new Html5Qrcode("reader");
 
-      html5QrCode.start(
-        { facingMode: "environment" },
-        { 
-          fps: 10, 
-          qrbox: { width: 250, height: 250 } // 🔹 Corrigido formato
-        },
+    html5QrCode
+      .start(
+        { facingMode: "environment" }, 
+        { fps: 10, qrbox: 250 },
         (decodedText) => {
-          console.log("QR Code lido:", decodedText);
           setShowScanner(false);
-          
-          const orderId = Number(decodedText);
-          if (!isNaN(orderId)) {
-            const found = orders.find((o) => o.id_order === orderId);
-            if (found) {
-              setScannedOrderId(found.id_order);
-            } else {
-              alert("注文が見つかりません。");
-            }
-          } else {
-            alert("QRコードが無効です。");
-          }
+          html5QrCode.stop();
+
+          const found = orders.find((o) => o.id_order === Number(decodedText));
+          if (found) setScannedOrderId(found.id_order);
+          else alert("注文が見つかりません。");
         },
-        (error) => {
-          // Apenas log errors, não mostrar alertas para cada frame
-          if (!error.includes("NotFoundException")) {
-            console.warn("QRコード読み取りエラー:", error);
-          }
-        }
-      ).catch((err) => {
-        console.error("Erro ao iniciar câmera:", err);
-        alert("カメラの起動に失敗しました。");
-        setShowScanner(false);
-      });
-    }
+        (err) => console.warn("QRコード読み取りエラー:", err)
+      )
+      .catch((err) => console.error("Erro ao iniciar câmera:", err));
 
     return () => {
-      if (html5QrCode && html5QrCode.isScanning) {
-        html5QrCode.stop().then(() => {
-          html5QrCode?.clear();
-        }).catch((err) => {
-          console.error("Erro ao parar scanner:", err);
-        });
-      }
+      html5QrCode.stop().then(() => html5QrCode.clear());
     };
   }, [showScanner, orders]);
 
