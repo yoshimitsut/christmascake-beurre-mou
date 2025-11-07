@@ -203,9 +203,7 @@ app.put('/api/orders/:id_order', async (req, res) => {
     secure: false,
     auth: {
         user: "beurre.mou.christmascake@gmail.com",
-        // user: "shimitsutanaka@gmail.com",
         pass: "gvelryhahkljfpke"
-        // pass: "vmiepzoxltefekcr"
     }
   });
 
@@ -397,7 +395,7 @@ app.put('/api/orders/:id_order', async (req, res) => {
 
     const mailOptions = {
         from: '"パティスリーブール・ムー" <beurre.mou.christmascake@gmail.com>', 
-        to: email, 
+        to: [email, "beurre.mou.christmascake@gmail.com"],
         subject: `🎂 ご注文内容変更のお知らせ - 受付番号 ${String(id_order).padStart(4, "0")}`,
         html: `
           <div style="border: 1px solid #ddd; padding: 20px; max-width: 400px; margin: 0 auto; font-family: Arial, sans-serif;">
@@ -543,7 +541,7 @@ app.put('/api/reservar/:id_order', async (req, res) => {
 
         const mailOptions = {
           from: '"パティスリーブール・ムー" <beurre.mou.christmascake@gmail.com>',
-          to: order.email,
+          to: [order.email, "beurre.mou.christmascake@gmail.com"],
           subject: `ご注文のキャンセル完了 - 受付番号 ${String(id_order).padStart(4, "0")}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0;">
@@ -612,32 +610,6 @@ app.put('/api/reservar/:id_order', async (req, res) => {
       for(const oc of orderCakes){
         await conn.query('UPDATE cake_sizes SET stock = stock - ? WHERE cake_id=? AND size=?', [oc.amount, oc.cake_id, oc.size]);
       }
-
-      // 📧 OPÇÃO: Também pode enviar email de reativação se quiser
-      // try {
-      //   const formattedDate = formatDateJP(order.date);
-        
-      //   const mailOptions = {
-      //     from: '"パティスリーブール・ムー" <shimitsutanaka@gmail.com>',
-      //     to: order.email,
-      //     subject: `✅ ご注文の再開 - 受付番号 ${String(id_order).padStart(4, "0")}`,
-      //     html: `
-      //       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      //         <h2 style="color: #28a745; text-align: center;">✅ 注文が再開されました</h2>
-      //         <p>${order.first_name} ${order.last_name}様</p>
-      //         <p>受付番号 <strong>${String(id_order).padStart(4, "0")}</strong> の注文が再開されました。</p>
-      //         <p><strong>受取予定日：</strong> ${formattedDate}</p>
-      //         <p><strong>受取時間：</strong> ${order.pickupHour}</p>
-      //         <p>引き続きよろしくお願いいたします。</p>
-      //       </div>
-      //     `
-      //   };
-        
-      //   const info = await transporter.sendMail(mailOptions);
-      //   console.log("📧 Email de reativação enviado:", info.messageId);
-      // } catch (emailError) {
-      //   console.error("❌ Erro ao enviar email de reativação:", emailError);
-      // }
     }
 
     await conn.commit();
