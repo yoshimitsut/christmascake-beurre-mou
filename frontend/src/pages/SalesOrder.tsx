@@ -1,9 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
 import "./SalesOrder.css";
-import type { Order } from "../types/types";
+import type { Order, Cake } from "../types/types";
 import { STATUS_OPTIONS } from "../types/types";
 import { useNavigate } from "react-router-dom";
-import { formatDateJP } from "../utils/formatDateJP";
+import { formatMonthDayJP } from "../utils/formatDateJP";
 
 // Interfaces para tipagem correta
 interface CakeSizeData {
@@ -29,37 +29,63 @@ export default function SalesOrder() {
   const [, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [statusDayCounts, setStatusDayCounts] = useState<StatusDayCountsType>({});
-  const [orders, setOrders] = useState<Order[]>([]); // Adicione este estado
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [allCakes, setAllCakes] = useState<Cake[]>([]);
 
   const navigate = useNavigate();
-
   const statusOptions = STATUS_OPTIONS;
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/list`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Resposta completa da API:", data);
+    // 🔹 PRIMEIRO: Carregar todos os bolos do banco
+    const fetchAllCakes = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/cake`);
+        const data = await response.json();
         
-        let ordersData: Order[] = [];
+        if (data.success && Array.isArray(data.cakes)) {
+          // Ordenar bolos pelo ID
+          const sortedCakes = data.cakes.sort((a: Cake, b: Cake) => a.id - b.id);
+          setAllCakes(sortedCakes);
+          console.log("Todos os bolos carregados:", sortedCakes);
+          return sortedCakes;
+        } else {
+          throw new Error("Formato de resposta inesperado para bolos");
+        }
+      } catch (err) {
+        console.error("Erro ao carregar bolos:", err);
+        return [];
+      }
+    };
+
+    // 🔹 SEGUNDO: Carregar pedidos e processar dados
+    const fetchOrdersAndProcess = async () => {
+      try {
+        const cakes = await fetchAllCakes();
         
-        if (Array.isArray(data)) {
-          ordersData = data;
-        } else if (data.orders && Array.isArray(data.orders)) {
-          ordersData = data.orders;
-        } else if (data.data && Array.isArray(data.data)) {
-          ordersData = data.data;
+        const ordersResponse = await fetch(`${import.meta.env.VITE_API_URL}/api/list`);
+        const ordersData = await ordersResponse.json();
+        
+        console.log("Resposta completa da API:", ordersData);
+        
+        let ordersDataProcessed: Order[] = [];
+        
+        if (Array.isArray(ordersData)) {
+          ordersDataProcessed = ordersData;
+        } else if (ordersData.orders && Array.isArray(ordersData.orders)) {
+          ordersDataProcessed = ordersData.orders;
+        } else if (ordersData.data && Array.isArray(ordersData.data)) {
+          ordersDataProcessed = ordersData.data;
         } else {
           throw new Error("Formato de resposta inesperado da API");
         }
 
-        console.log("Pedidos processados:", ordersData);
+        console.log("Pedidos processados:", ordersDataProcessed);
 
         const grouped: SummaryType = {};
         const allDates = new Set<string>();
         const statusCounterByDate: StatusDayCountsType = {};
 
-        ordersData.forEach((order) => {
+        ordersDataProcessed.forEach((order) => {
           const status = order.status?.toLowerCase() || '';
           const date = order.date;
           
@@ -100,19 +126,59 @@ export default function SalesOrder() {
           }
         });
 
+        // 🔹 GARANTIR QUE TODOS OS BOLOS APAREÇAM, MESMO SEM PEDIDOS
+        cakes.forEach((cake: Cake) => {
+          const cakeName = cake.name.trim();
+          
+          // Se o bolo não existe no summary, criar estrutura vazia
+          if (!grouped[cakeName]) {
+            grouped[cakeName] = {};
+          }
+
+          // 🔥 CORREÇÃO: Ordenar tamanhos pelo ID antes de processar
+          // Usando o id do SizeOption que vem do seu types.ts
+          const sortedSizes = cake.sizes.sort((a, b) => (a.id || 0) - (b.id || 0));
+          
+          // Garantir que todos os tamanhos do bolo apareçam
+          sortedSizes.forEach(sizeInfo => {
+            const size = sizeInfo.size?.trim() || '';
+            
+            if (!grouped[cakeName][size]) {
+              grouped[cakeName][size] = {
+                stock: sizeInfo.stock,
+                days: {}
+              };
+              
+              // Inicializar todos os dias com 0
+              [...allDates].forEach(date => {
+                grouped[cakeName][size].days[date] = 0;
+              });
+            } else {
+              // Garantir que dias faltantes tenham valor 0
+              [...allDates].forEach(date => {
+                if (!grouped[cakeName][size].days[date]) {
+                  grouped[cakeName][size].days[date] = 0;
+                }
+              });
+            }
+          });
+        });
+
         console.table(grouped);
         setSummary(grouped);
         setDates([...allDates].sort());
         setStatusDayCounts(statusCounterByDate);
-        setOrders(ordersData); // Salva os pedidos no estado
+        setOrders(ordersDataProcessed);
         setLoading(false);
         setError(null);
-      })
-      .catch((error) => {
-        console.error("Erro ao carregar pedidos:", error);
-        setError("Erro ao carregar dados: " + error.message);
+      } catch (err) {
+        console.error("Erro ao carregar pedidos:", err);
+        setError("Erro ao carregar dados: " + (err instanceof Error ? err.message : 'Erro desconhecido'));
         setLoading(false);
-      });
+      }
+    };
+
+    fetchOrdersAndProcess();
   }, []);
 
   // Cálculo dos valores por status usando useMemo
@@ -148,6 +214,11 @@ export default function SalesOrder() {
     return acc;
   }, {});
 
+  // 🔹 OBTER BOLOS ORDENADOS POR ID
+  const cakesInOrder = useMemo(() => {
+    return allCakes.sort((a, b) => a.id - b.id);
+  }, [allCakes]);
+
   if (error) return (
     <div className="error-container">
       <p>{error}</p>
@@ -175,7 +246,7 @@ export default function SalesOrder() {
               <tr>
                 <th>日付毎の合計</th>
                 {dates.map((date) => (
-                  <th key={date}>{formatDateJP(date)}</th>
+                  <th key={date}>{formatMonthDayJP(date)}</th>
                 ))}
                 <th>合計</th>
               </tr>
@@ -193,12 +264,47 @@ export default function SalesOrder() {
         </div>
       </div>
 
-      {/* 🔹 Tabelas individuais por bolo */}
-      {Object.entries(summary).map(([cakeName, sizes]) => {
+      {/* 🔹 Tabelas individuais por bolo - AGORA EM ORDEM DE ID */}
+      {cakesInOrder.map((cake) => {
+        const cakeName = cake.name.trim();
+        const sizes = summary[cakeName] || {};
+        
+        // 🔥 CORREÇÃO: Criar um mapa de tamanhos com seus IDs
+        const sizeIdMap = new Map<string, number>();
+        cake.sizes.forEach(sizeInfo => {
+          if (sizeInfo.size) {
+            sizeIdMap.set(sizeInfo.size.trim(), sizeInfo.id || 0);
+          }
+        });
+
+        // Se não há dados para este bolo, criar estrutura vazia baseada nos sizes do bolo
+        const displaySizes = Object.keys(sizes).length > 0 ? sizes : 
+          cake.sizes
+            .sort((a, b) => (a.id || 0) - (b.id || 0)) // 🔹 Ordenar pelo ID
+            .reduce((acc, sizeInfo) => {
+              if (sizeInfo.size) {
+                acc[sizeInfo.size] = {
+                  stock: sizeInfo.stock,
+                  days: dates.reduce((daysAcc, date) => {
+                    daysAcc[date] = 0;
+                    return daysAcc;
+                  }, {} as Record<string, number>)
+                };
+              }
+              return acc;
+            }, {} as SummaryType[string]);
+        
+        // 🔥 CORREÇÃO: Ordenar os tamanhos pelo ID
+        const sortedDisplaySizes = Object.entries(displaySizes).sort(([sizeA], [sizeB]) => {
+          const idA = sizeIdMap.get(sizeA) || 9999;
+          const idB = sizeIdMap.get(sizeB) || 9999;
+          return idA - idB;
+        });
+
         // Total por dia desse bolo
         const totalPorDia: Record<string, number> = dates.reduce((acc: Record<string, number>, date) => {
           let total = 0;
-          Object.values(sizes).forEach((sizeData) => {
+          Object.values(displaySizes).forEach((sizeData) => {
             total += sizeData.days[date] || 0;
           });
           acc[date] = total;
@@ -208,25 +314,27 @@ export default function SalesOrder() {
         const totalGeral = Object.values(totalPorDia).reduce((a, b) => a + b, 0);
 
         return (
-          <div key={cakeName} className={`cake-table-wrapper`}>
+          <div key={cake.id} className={`cake-table-wrapper`}>
             <div className={`table-${cakeName} table-wrapper-info`}>
               <table className={`summary-table`}>
                 <thead>
                   <tr>
                     <th>{cakeName}</th>
                     {dates.map((date) => (
-                      <th key={date}>{formatDateJP(date)}</th>
+                      <th key={date}>{formatMonthDayJP(date)}</th>
                     ))}
                     <th>合計</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.entries(sizes).map(([size, sizeData]) => {
-                    const total = Object.values(sizeData.days).reduce((a, b) => a + b, 0);
+                  {sortedDisplaySizes.map(([size, sizeData]) => {
+                    const total = dates.reduce((sum, date) => 
+                      sum + (sizeData.days[date] || 0), 0
+                    );
                     return (
                       <tr key={`${cakeName}-${size}`}>
                         <td>
-                          {size} <span className="stock-info">(在庫: {sizeData.stock} / {sizeData.stock+total})</span>
+                          {size} <span className="stock-info">(在庫: {sizeData.stock} / {sizeData.stock + total})</span>
                         </td>
                         {dates.map((date) => (
                           <td key={date}>{sizeData.days[date] || 0}</td>
@@ -259,7 +367,7 @@ export default function SalesOrder() {
             <tr>
               <th>支払い状況</th>
               {dates.map((date) => (
-                <th key={date}>{formatDateJP(date)}</th>
+                <th key={date}>{formatMonthDayJP(date)}</th>
               ))}
               <th>合計(件数)</th>
               <th>合計(金額)</th>
@@ -349,8 +457,6 @@ export default function SalesOrder() {
           </tbody>
         </table>
       </div>
-
-      
     </div>
   );
 }
