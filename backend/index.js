@@ -141,6 +141,8 @@ app.post('/api/reservar', async (req, res) => {
         <p style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">
           ¥${Math.trunc(newOrder.cakes.reduce((total, cake) => total + ((cake.price) * cake.amount), 0)).toLocaleString("ja-JP")}
           <span style="font-size: 14px; font-weight: normal;">(税込)</span>
+          <br/>
+          <p><strong style="color: red;">事前にお支払い（ご来店）頂く事で、<br />受け取り当日スムーズにお渡しができます。</strong></p>
         </p>
       </div>
     
@@ -415,6 +417,8 @@ app.put('/api/orders/:id_order', async (req, res) => {
               <p style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">
                 ¥${Math.trunc(totalComTaxa).toLocaleString("ja-JP")}
                 <span style="font-size: 14px; font-weight: normal;">(税込)</span>
+                <br/>
+                <p><strong style="color: red;">事前にお支払い（ご来店）頂く事で、<br />受け取り当日スムーズにお渡しができます。</strong></p>
               </p>
             </div>
 
