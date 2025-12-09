@@ -123,13 +123,22 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
 
     return {
       value: String(c.id), 
-      label: hasStock ? c.name : `${c.name} (在庫なし)`,
-      isDisabled: !hasStock 
+      label: (
+        <span>
+          {c.name}
+          {!hasStock && (
+            <span style={{ color: 'red', fontSize: '0.8rem', marginLeft: '6'}} >
+              (在庫なし)
+            </span>
+          )}
+        </span>
+      ),
+      isDisabled: !hasStock
     };
   });
 
   const handleSave = async () => {
-    setIsSaving(true); // desativa o botão imediatamente
+    setIsSaving(true); 
 
     try {
       const updatedOrder: Order = {
@@ -151,15 +160,9 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
       setIsSaving(false); // reativa o botão após o salvamento (ou erro)
     }
   };
-  // const updatedOrder: Order = {
-  //   ...editingOrder,
-  //   cakes: cakes,
-  //   date: formatDateForBackend(selectedDate), // Usar a função corrigida
-  //   pickupHour: selectedTime || editingOrder.pickupHour,
-  // };
   
 
-  type OptionType = { value: string; label: string; isDisabled?: boolean; };
+  type OptionType = { value: string; label: React.ReactNode; isDisabled?: boolean; };
 
   const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
     control: (base: CSSObjectWithLabel) => ({
@@ -301,22 +304,24 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
                         options={cakeOptions}
                         value={cakeOptions.find(opt => String(opt.value) === String(cake.cake_id))}
                         onChange={(val: SingleValue<OptionType>) => {
-                          if (val) {
-                            const newCakeId = Number(val.value);
-                            const selectedCake = getCakeDataById(newCakeId);
-                            if (selectedCake) {
-                              const firstAvailableSize = selectedCake.sizes.find(s => s.stock > 0) || selectedCake.sizes[0];
-                              setCakes(prev => prev.map((c, i) => 
-                                i === index ? { 
-                                  ...c, 
-                                  cake_id: newCakeId,
-                                  name: val.label,
-                                  size: firstAvailableSize?.size || "",
-                                  price: firstAvailableSize?.price || 0
-                                } : c
-                              ));
-                            }
-                          }
+                          if (!val) return;
+                            
+                          const newCakeId = Number(val.value);
+                          const selectedCake = getCakeDataById(newCakeId);
+                          if (!selectedCake) return
+                          
+                          const firstAvailableSize = selectedCake.sizes.find(s => s.stock > 0) || selectedCake.sizes[0];
+                          setCakes(prev => prev.map((c, i) => 
+                            i === index ? { 
+                              ...c, 
+                              cake_id: newCakeId,
+                              name: selectedCake.name,
+                              size: firstAvailableSize?.size || "",
+                              price: firstAvailableSize?.price || 0
+                            } : c
+                          ));
+                        
+                          
                         }}
                       />
                     </div>
