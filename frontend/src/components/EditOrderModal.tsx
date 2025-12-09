@@ -118,7 +118,15 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
     });
   };
 
-  const cakeOptions = cakesData.map(c => ({ value: String(c.id), label: c.name }));
+  const cakeOptions = cakesData.map(c => { 
+    const hasStock = c.sizes.some(size => size.stock > 0);
+
+    return {
+      value: String(c.id), 
+      label: hasStock ? c.name : `${c.name} (在庫なし)`,
+      isDisabled: !hasStock 
+    };
+  });
 
   const handleSave = async () => {
     setIsSaving(true); // desativa o botão imediatamente
@@ -151,7 +159,7 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
   // };
   
 
-  type OptionType = { value: string; label: string };
+  type OptionType = { value: string; label: string; isDisabled?: boolean; };
 
   const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
     control: (base: CSSObjectWithLabel) => ({
@@ -289,6 +297,7 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
                       <label>ケーキ名:</label>
                       <Select<OptionType, false, GroupBase<OptionType>>
                         styles={customStyles}
+                        isOptionDisabled={(option) => !!option.isDisabled}
                         options={cakeOptions}
                         value={cakeOptions.find(opt => String(opt.value) === String(cake.cake_id))}
                         onChange={(val: SingleValue<OptionType>) => {
@@ -333,7 +342,7 @@ export default function EditOrderModal({ editingOrder, setEditingOrder, handleSa
                         isOptionDisabled={(option) => !!option.isDisabled}
                         formatOptionLabel={(option) =>
                           !option.isDisabled
-                            ? `${option.size} ￥${option.price.toLocaleString()} （${(option.price + option.price * 0.08).toLocaleString("ja-JP")}税込）`
+                            ? `${option.size} ￥${option.price.toLocaleString()} 税込`
                             : (
                               <span>
                                 {option.size} ￥{option.price.toLocaleString()}
